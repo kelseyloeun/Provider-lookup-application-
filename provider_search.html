@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Provider Lookup</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+        background-color: #f5f7fa;
+        color: #1f2937;
+      }
+
+      .page-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 50px 30px;
+      }
+
+      /* Header */
+
+      .header {
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        margin-bottom: 8px;
+        font-size: 32px;
+        color: #111827;
+      }
+
+      .header p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 16px;
+      }
+
+      /* Search Area */
+
+      .search-card {
+        background-color: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 35px;
+      }
+
+      .search-container {
+        display: flex;
+        align-items: flex-end;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .search-field {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 170px;
+      }
+
+      .search-field label {
+        font-weight: 600;
+        margin-bottom: 7px;
+        font-size: 14px;
+      }
+
+      .search-field input {
+        width: 100%;
+        padding: 11px 12px;
+        font-size: 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        outline: none;
+      }
+
+      .search-field input:focus {
+        border-color: #2563eb;
+      }
+
+      .search-button {
+        padding: 11px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        color: white;
+        background-color: #2563eb;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .search-button:hover {
+        background-color: #1d4ed8;
+      }
+
+      /* Results */
+
+      .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .results-header h2 {
+        margin: 0;
+      }
+
+      .result-count {
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      .provider-result {
+        background-color: white;
+        padding: 24px;
+        margin-bottom: 16px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .provider-result h3 {
+        margin-top: 0;
+        margin-bottom: 16px;
+        color: #1d4ed8;
+        font-size: 20px;
+      }
+
+      .provider-result p {
+        margin: 8px 0;
+        line-height: 1.5;
+      }
+
+      .provider-result strong {
+        color: #374151;
+      }
+
+      /* No Results */
+
+      .no-results {
+        background-color: white;
+        padding: 25px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+      }
+
+      /* Pagination */
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+      }
+
+      .pagination a {
+        padding: 10px 16px;
+        background-color: #2563eb;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .pagination a:hover {
+        background-color: #1d4ed8;
+      }
+
+      .pagination span {
+        font-weight: 600;
+        color: #4b5563;
+      }
+
+      /* Mobile */
+
+      @media (max-width: 800px) {
+        .page-container {
+          padding: 30px 18px;
+        }
+
+        .search-container {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .search-field {
+          width: 100%;
+        }
+
+        .search-button {
+          width: 100%;
+        }
+
+        .results-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+
+        .pagination {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page-container">
+      <!-- Header -->
+
+      <div class="header">
+        <h1>Provider Lookup</h1>
+
+        <p>
+          Search healthcare providers by first name, last name, specialty, city,
+          or ZIP code.
+        </p>
+      </div>
+
+      <!-- Search Form -->
+
+      <div class="search-card">
+        <form method="GET">
+          <div class="search-container">
+            <!-- First Name -->
+
+            <div class="search-field">
+              <label for="first_name">First Name</label>
+
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                placeholder="First name"
+                value="{{ first_name }}"
+              />
+            </div>
+
+            <!-- Last Name -->
+
+            <div class="search-field">
+              <label for="last_name">Last Name</label>
+
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                placeholder="Last name"
+                value="{{ last_name }}"
+              />
+            </div>
+
+            <!-- Specialty -->
+
+            <div class="search-field">
+              <label for="specialty">Specialty</label>
+
+              <input
+                type="text"
+                id="specialty"
+                name="specialty"
+                placeholder="Example: Cardiology"
+                value="{{ specialty }}"
+              />
+            </div>
+
+            <!-- City / ZIP -->
+
+            <div class="search-field">
+              <label for="location">City / ZIP Code</label>
+
+              <input
+                type="text"
+                id="location"
+                name="location"
+                placeholder="City or ZIP code"
+                value="{{ location }}"
+              />
+            </div>
+
+            <!-- Search Button -->
+
+            <button class="search-button" type="submit">Search</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Search Results -->
+
+      {% if first_name or last_name or specialty or location %}
+
+      <div class="results-header">
+        <h2>Search Results</h2>
+
+        {% if page_obj %}
+        <span class="result-count">
+          {{ page_obj.paginator.count }} providers found
+        </span>
+        {% endif %}
+      </div>
+
+      {% if results %} {% for result in results %}
+
+      <div class="provider-result">
+        <!-- Provider Name -->
+
+        {% if result.provider.organization_name %}
+
+        <h3>{{ result.provider.organization_name }}</h3>
+
+        {% else %}
+
+        <h3>
+          {{ result.provider.first_name }} {{ result.provider.last_name }}
+        </h3>
+
+        {% endif %}
+
+        <!-- NPI -->
+
+        <p>
+          <strong>NPI:</strong>
+          {{ result.provider.npi }}
+        </p>
+
+        <!-- Specialty -->
+
+        <p>
+          <strong>Specialty:</strong>
+          {{ result.specialty|default:"Not available" }}
+        </p>
+
+        <!-- Address -->
+
+        {% if result.address %}
+
+        <p>
+          <strong>Location:</strong>
+          {{ result.address.city }}, {{ result.address.state }}
+        </p>
+
+        <p>
+          <strong>ZIP Code:</strong>
+          {{ result.address.postal_code|default:"Not available" }}
+        </p>
+
+        <p>
+          <strong>Phone:</strong>
+          {{ result.address.phone|default:"Not available" }}
+        </p>
+
+        {% else %}
+
+        <p>
+          <strong>Location:</strong>
+          Not available
+        </p>
+
+        <p>
+          <strong>ZIP Code:</strong>
+          Not available
+        </p>
+
+        <p>
+          <strong>Phone:</strong>
+          Not available
+        </p>
+
+        {% endif %}
+      </div>
+
+      {% endfor %}
+
+      <!-- Pagination -->
+
+      {% if page_obj.has_other_pages %}
+
+      <div class="pagination">
+        <!-- Previous Page -->
+
+        {% if page_obj.has_previous %}
+
+        <a
+          href="?first_name={{ first_name|urlencode }}&last_name={{ last_name|urlencode }}&specialty={{ specialty|urlencode }}&location={{ location|urlencode }}&page={{ page_obj.previous_page_number }}"
+        >
+          ← Previous
+        </a>
+
+        {% endif %}
+
+        <!-- Current Page -->
+
+        <span>
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        <!-- Next Page -->
+
+        {% if page_obj.has_next %}
+
+        <a
+          href="?first_name={{ first_name|urlencode }}&last_name={{ last_name|urlencode }}&specialty={{ specialty|urlencode }}&location={{ location|urlencode }}&page={{ page_obj.next_page_number }}"
+        >
+          Next →
+        </a>
+
+        {% endif %}
+      </div>
+
+      {% endif %} {% else %}
+
+      <div class="no-results">
+        <p>No providers found. Try changing your search terms.</p>
+      </div>
+
+      {% endif %} {% endif %}
+    </div>
+  </body>
+</html>

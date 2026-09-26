@@ -1,0 +1,50 @@
+Table provider {
+  id integer [primary key, increment, not null]
+  npi varchar(10) [unique, not null]
+  entity_type integer [not null]
+  first_name varchar(100) [not null]
+  last_name varchar(100) [not null]
+  organization_name varchar(200) [not null]
+}
+
+
+Table address {
+  id integer [primary key, increment, not null]
+  provider_id integer [not null]
+  address_type varchar(50) [not null]
+  address_line_1 varchar(200) [not null]
+  address_line_2 varchar(200) [not null]
+  city varchar(100) [not null]
+  state varchar(50) [not null]
+  postal_code varchar(20) [not null]
+  phone varchar(30) [not null]
+}
+
+
+Table taxonomy {
+  id integer [primary key, increment, not null]
+  taxonomy_code varchar(10) [unique, not null]
+  grouping varchar(150) [not null]
+  classification varchar(150) [not null]
+  specialization varchar(150) [not null]
+  definition text [not null]
+}
+
+
+Table provider_taxonomy {
+  id integer [primary key, increment, not null]
+  provider_id integer [not null]
+  taxonomy_id integer [not null]
+  is_primary boolean [not null]
+
+  indexes {
+    (provider_id, taxonomy_id) [unique]
+  }
+}
+
+
+Ref: address.provider_id > provider.id
+
+Ref: provider_taxonomy.provider_id > provider.id
+
+Ref: provider_taxonomy.taxonomy_id > taxonomy.id
